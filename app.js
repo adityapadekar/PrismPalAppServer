@@ -94,6 +94,7 @@ const io = new Server(server, {
     pingTimeout: 60000,
     cors: {
         origin: [
+            "https://prismpalappclient.onrender.com/",
             "https://master--unrivaled-gecko-0dd445.netlify.app",
             "http://localhost:3000",
         ],
