@@ -108,7 +108,7 @@ module.exports.userSignUp = async (req, res) => {
     });
 
     const emailSubject = "Email verification";
-    const emailBody = `Please click on the link below to verify your email address: http://localhost:3000/emailVerification/${newUser._id}/${token}`;
+    const emailBody = `Please click on the link below to verify your email address: ${process.env.FRONTEND_BASE_URL}/emailVerification/${newUser._id}/${token}`;
     await sendResetEmailMail(email, emailSubject, emailBody);
 
     // Send the response with Signup success message
