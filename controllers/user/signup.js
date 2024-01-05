@@ -1,6 +1,5 @@
 // Importing packages
 const { StatusCodes } = require("http-status-codes");
-const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 
 // Importing the models
@@ -99,24 +98,16 @@ module.exports.userSignUp = async (req, res) => {
         profilePicture: profilePicture,
     });
 
-    // Create a token for email verification
-    const hash = crypto.randomBytes(32).toString("hex");
-
-    // Sign the token with the secret key
-    const signedToken = jwt.sign(
-        { id: newUser._id, hash: hash },
-        process.env.JWT_STRING,
-        { expiresIn: "1h" }
-    );
+    const token = crypto.randomBytes(32).toString("hex");
 
     // Save the token in the database
     await EmailVerificationToken.create({
         userId: newUser._id,
-        hash: hash,
+        token: token,
     });
 
     const emailSubject = "Email verification";
-    const emailBody = `Please click on the link below to verify your email address: ${process.env.FRONTEND_BASE_URL}/emailVerification?token=${signedToken}`;
+    const emailBody = `Please click on the link below to verify your email address: ${process.env.FRONTEND_BASE_URL}/emailVerification/${newUser._id}/${token}`;
     await sendResetEmailMail(email, emailSubject, emailBody);
 
     // Send the response with Signup success message

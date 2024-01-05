@@ -15,8 +15,8 @@ const EmailVerificationTokenSchema = new mongoose.Schema({
         ref: "User",
         unique: true,
     },
-    // The verification hash
-    hash: {
+    // The verification token
+    token: {
         type: String,
         trim: true,
         required: [true, "Please provide token"],
