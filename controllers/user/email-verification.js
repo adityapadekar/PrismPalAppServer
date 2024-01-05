@@ -1,5 +1,6 @@
 // Importing packages
 const { StatusCodes } = require("http-status-codes");
+const jwt = require("jsonwebtoken");
 
 // Importing models
 const User = require("../../models/user");
@@ -17,15 +18,17 @@ const { NotFoundError, BadRequestError } = require("../../errors");
  */
 module.exports.userEmailVerification = async (req, res) => {
     // Extract the id and token from the request
-    const { id, token } = req.params;
+    const { token } = req.params;
 
-    // Check if id and token are provided
-    if (!id || !token) {
-        throw new BadRequestError("Please provide id and token");
+    // Check if token are provided
+    if (!token) {
+        throw new BadRequestError("Please provide token");
     }
 
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+
     // Find the user by id
-    const user = await User.findById(id);
+    const user = await User.findById(decodedToken.id);
 
     // Throw an error if user is not found
     if (!user) {
@@ -39,11 +42,13 @@ module.exports.userEmailVerification = async (req, res) => {
 
     // Throw an error if email verification token is not found
     if (!emailVerificationToken) {
-        throw new NotFoundError("Email verification token not found");
+        throw new NotFoundError(
+            "Email verification token not found! Please try again"
+        );
     }
 
     // Throw an error if the token is invalid
-    if (emailVerificationToken.token !== token) {
+    if (emailVerificationToken.hash !== decodedToken.hash) {
         throw new BadRequestError("Invalid token");
     }
 

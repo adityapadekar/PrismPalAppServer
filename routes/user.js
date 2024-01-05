@@ -28,7 +28,7 @@ userRouter.post("/signup", userSignUp);
 
 userRouter.post("/login", userLogin);
 
-userRouter.get("/email-verification/:id/:token", userEmailVerification);
+userRouter.get("/email-verification/:token", userEmailVerification);
 
 userRouter.get(
     "/searchuser",
