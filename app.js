@@ -19,7 +19,7 @@ const app = express();
 app.use(cors());
 
 // Enable logging
-app.use(morgan("combined"));
+app.use(morgan("dev"));
 
 // Parse JSON bodies
 app.use(express.json({ limit: "50mb" }));
@@ -90,11 +90,10 @@ startServer();
 /*******************************************************************************
  * Socket.io
  ******************************************************************************/
-
 const io = new Server(server, {
     pingTimeout: 60000,
     cors: {
-        origin: "http://localhost:3000",
+        // origin: "http://localhost:3000",
         methods: ["GET", "POST", "PATCH", "DELETE"],
     },
 });
