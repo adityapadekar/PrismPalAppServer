@@ -25,7 +25,7 @@ module.exports.userEmailVerification = async (req, res) => {
         throw new BadRequestError("Please provide token");
     }
 
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const decodedToken = jwt.verify(token, process.env.JWT_STRING);
 
     // Find the user by id
     const user = await User.findById(decodedToken.id);

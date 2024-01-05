@@ -105,7 +105,7 @@ module.exports.userSignUp = async (req, res) => {
     // Sign the token with the secret key
     const signedToken = jwt.sign(
         { id: newUser._id, hash: hash },
-        process.env.JWT_SECRET,
+        process.env.JWT_STRING,
         { expiresIn: "1h" }
     );
 
