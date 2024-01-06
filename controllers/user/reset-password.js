@@ -1,51 +1,54 @@
-// Importing packages
 const { StatusCodes } = require("http-status-codes");
 const bcrypt = require("bcryptjs");
-
-// Importing models
+const jwt = require("jsonwebtoken");
 const User = require("../../models/user");
+const VerificationToken = require("../../models/verification-token");
+const { NotFoundError, BadRequestError } = require("../../errors");
 
-// Importing error classes
-const { BadRequestError } = require("../../errors");
+module.exports.resetPassword = async (req, res) => {
+    const { token } = req.params;
+    const { newPassword } = req.body;
 
-/**
- * Resets the password for a user by email.
- *
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @throws {BadRequestError} If unable to reset password
- */
-module.exports.userResetPassword = async (req, res) => {
-    const { newPassword, oldPassword } = req.body;
-    const user = req.user;
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const { id, hash } = decodedToken;
 
-    // Check if  newPassword, and oldPassword are provided
-    if (!newPassword || !oldPassword) {
+    if (!newPassword) {
         throw new BadRequestError(
-            "Please provide required fields:  newPassword, oldPassword"
+            "Please provide required fields:  newPassword"
         );
     }
 
-    // Check if old password is correct
-    if (!user.checkPassword(oldPassword)) {
-        throw new BadRequestError("Old password is incorrect");
+    const user = await User.findById(id);
+
+    if (!user) {
+        throw new NotFoundError("Invalid token");
+    }
+
+    const verificationToken = await VerificationToken.findOne({
+        userId: user._id,
+    });
+
+    if (!verificationToken) {
+        throw new NotFoundError("Invalid token");
+    }
+
+    if (verificationToken.hash !== hash) {
+        throw new BadRequestError("Invalid token");
     }
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(newPassword, salt);
 
-    const updatedUser = await User.findByIdAndUpdate(
+    await User.findByIdAndUpdate(
         user._id,
         { password: hashedPassword },
         { new: true }
     );
 
-    // Throw an error if unable to reset password
-    if (!updatedUser) {
-        throw new BadRequestError("Unable to reset password");
-    }
+    await VerificationToken.deleteOne({
+        userId: user._id,
+    });
 
-    // Return success response
     return res.status(StatusCodes.OK).json({
         msg: "Password reset successfully",
         status: true,

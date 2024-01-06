@@ -1,12 +1,4 @@
-/**
- * @module chatRouter
- * @description Router for handling chat routes
- */
-
-// Importing packages
 const express = require("express");
-
-// Importing Controllers
 const {
     accessChat,
     getChats,
@@ -16,15 +8,12 @@ const {
     addToGroupChat,
     leaveGroupChat,
 } = require("../controllers/chat");
-
-// Importing middlewares
 const {
     authenticationMiddleware,
     userExist,
     isVerified,
 } = require("../middlewares");
 
-// Creating a new router instance
 const chatRouter = new express.Router();
 
 chatRouter.post(
@@ -77,5 +66,4 @@ chatRouter.patch(
     leaveGroupChat
 );
 
-// Exporting the chatRouter module
 module.exports = chatRouter;

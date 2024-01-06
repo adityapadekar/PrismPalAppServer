@@ -1,11 +1,6 @@
-// Importing packages
 const { StatusCodes } = require("http-status-codes");
-
-// Importing the User model
 const Chat = require("../../models/chat");
 const Message = require("../../models/message");
-
-// Importing custom error classes
 const { NotFoundError } = require("../../errors");
 
 module.exports.sendMessage = async (req, res) => {

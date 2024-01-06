@@ -1,7 +1,4 @@
-// Importing packages
 const { StatusCodes } = require("http-status-codes");
-
-// Importing the User model
 const Chat = require("../../models/chat");
 
 module.exports.getChats = async (req, res) => {

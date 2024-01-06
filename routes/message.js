@@ -1,22 +1,11 @@
-/**
- * @module messageRouter
- * @description Router for handling message routes
- */
-
-// Importing packages
 const express = require("express");
-
-// Importing Controllers
 const { getAllMessages, sendMessage } = require("../controllers/message");
-
-// Importing middlewares
 const {
     authenticationMiddleware,
     userExist,
     isVerified,
 } = require("../middlewares");
 
-// Creating a new router instance
 const messageRouter = new express.Router();
 
 messageRouter.get(
@@ -35,5 +24,4 @@ messageRouter.post(
     sendMessage
 );
 
-// Exporting the messageRouter module
 module.exports = messageRouter;

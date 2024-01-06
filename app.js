@@ -1,39 +1,27 @@
 /*******************************************************************************
- * Server Setup
+ * Imports
  ******************************************************************************/
-// Load environment variables from a .env file
 require("dotenv").config();
-
-// Importing packages
 require("express-async-errors");
 const express = require("express");
 const { Server } = require("socket.io");
 const http = require("http");
 const cors = require("cors");
 const morgan = require("morgan");
-
-// Create an instance of the Express application
-const app = express();
-
-// Enable Cross-Origin Resource Sharing (CORS)
-app.use(cors());
-
-// Enable logging
-app.use(morgan("dev"));
-
-// Parse JSON bodies
-app.use(express.json({ limit: "50mb" }));
-
-// Importing middlewares
 const { errorHandlerMiddleware, pageNotFound } = require("./middlewares");
-
-// Importing module for database connection
 const { connectDB } = require("./db/connect");
+
+/*******************************************************************************
+ * Server Setup
+ ******************************************************************************/
+const app = express();
+app.use(cors());
+app.use(morgan("dev"));
+app.use(express.json({ limit: "50mb" }));
 
 /*******************************************************************************
  * Testing Get Route
  ******************************************************************************/
-
 app.get("/", (req, res) => {
     res.send("Chat App!");
 });
@@ -52,28 +40,21 @@ app.use("/api/v1/message", messageRouter);
 /*******************************************************************************
  * Manage Unexpected Errors
  ******************************************************************************/
-// Use the page not found middleware
 app.use(pageNotFound);
-
-// Use the error handler middleware
 app.use(errorHandlerMiddleware);
-
-// Define the port number for the server
-const port = process.env.PORT || 8080;
-
-// Define the MongoDB connection URI
-const mongoDBConnectionUri = process.env.MONGO_DB_URI;
 
 /*******************************************************************************
  * Start Server
  ******************************************************************************/
+const port = process.env.PORT || 8080;
+const mongoDBConnectionUri = process.env.MONGO_DB_URI;
+
 const server = http.createServer(app);
+
 const startServer = async () => {
     try {
-        // Connect to the MongoDB database
         await connectDB(mongoDBConnectionUri);
 
-        // Start the server and listen on the specified port
         server.listen(
             port,
             () => console.log(`Server is listening on port : ${port}`) // eslint-disable-line
@@ -84,13 +65,11 @@ const startServer = async () => {
     }
 };
 
-// Call the startServer function to start the server
 startServer();
 
 /*******************************************************************************
  * Socket.io
  ******************************************************************************/
-
 const io = new Server(server, {
     pingTimeout: 60000,
     cors: {

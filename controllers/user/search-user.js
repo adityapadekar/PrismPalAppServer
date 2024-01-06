@@ -1,10 +1,5 @@
-// Importing packages
 const { StatusCodes } = require("http-status-codes");
-
-// Importing the User model
 const User = require("../../models/user");
-
-// Importing custom error classes
 const { NotFoundError } = require("../../errors");
 
 module.exports.searchUser = async (req, res) => {

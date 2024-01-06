@@ -1,10 +1,5 @@
-// Importing packages
 const { StatusCodes } = require("http-status-codes");
-
-// Importing the User model
 const Chat = require("../../models/chat");
-
-// Importing custom error classes
 const { NotFoundError, InternalServerError } = require("../../errors");
 
 module.exports.leaveGroupChat = async (req, res) => {

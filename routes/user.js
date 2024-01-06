@@ -1,34 +1,26 @@
-/**
- * @module userRouter
- * @description Router for handling user routes
- */
-
-// Importing packages
 const express = require("express");
-
-// Importing Controllers
 const {
-    userSignUp,
+    signUp,
     userLogin,
     userEmailVerification,
     searchUser,
+    forgotPassword,
+    resetPassword,
+    changePassword,
 } = require("../controllers/user");
-
-// Importing middlewares
 const {
     authenticationMiddleware,
     userExist,
     isVerified,
 } = require("../middlewares");
 
-// Creating a new router instance
 const userRouter = new express.Router();
 
-userRouter.post("/signup", userSignUp);
+userRouter.post("/signup", signUp);
 
 userRouter.post("/login", userLogin);
 
-userRouter.get("/email-verification/:id/:token", userEmailVerification);
+userRouter.get("/email-verification/:token", userEmailVerification);
 
 userRouter.get(
     "/searchuser",
@@ -38,5 +30,16 @@ userRouter.get(
     searchUser
 );
 
-// Exporting the userRouter module
+userRouter.post("/forgot-password", forgotPassword);
+
+userRouter.post("/reset-password/:token", resetPassword);
+
+userRouter.post(
+    "/change-password",
+    authenticationMiddleware,
+    userExist,
+    isVerified,
+    changePassword
+);
+
 module.exports = userRouter;
